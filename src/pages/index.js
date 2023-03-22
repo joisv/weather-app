@@ -4,8 +4,9 @@ import { motion as m } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import csvtojson from 'csvtojson';
+import getlocations from '@/functions/getlocations'
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps() {
  let weatherData = []
   try {
     const response = await axios.get('https://visual-crossing-weather.p.rapidapi.com/forecast', {
@@ -41,8 +42,7 @@ export default function Home(props) {
   const [minute, setMinutes] = useState(0);
   const [currentMonts, setCurrentMonth] = useState(0);
   const rows = props.weatherData
-  const [location, setLocation] = useState(null);
-  const [permission, setPermission] = useState(false);
+  const { location, permission, updateLocation } = getlocations()
 
   
   let today = new Date();
@@ -64,22 +64,8 @@ export default function Home(props) {
   }
   
   useEffect(() => {
-    if (!navigator.geolocation) {
-      console.log('Geolocation is not supported by your browser');
-      return;
-    }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLocation(position.coords);
-        setPermission(true);
-      },
-      () => {
-        console.log('Unable to retrieve your location');
-        setPermission(false);
-      }
-    );
-   
+      updateLocation()
       setDayName(currentDayName)
       setDateName(date)
       setHours(hours)
@@ -87,14 +73,6 @@ export default function Home(props) {
       setCurrentMonth(currentMonth)
     return () => clearInterval(1000);
   }, [dayName, dateName, second, hour, minute] );
-  
-    if (!permission) {
-      console.log('allow');
-    }
-
-    if (!location) {
-    console.log('loading');
-    }
   return (
     <m.div 
       initial={{ y: "100%" }}
@@ -110,12 +88,12 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <div className='min-h-[105vh] bg-red-500 mb'>
+        <div className={`min-h-[105vh] bg-red-500 mb ${ hour >= 18 ? 'bg-slate-900' : 'bg-orange-400'}`}>
           <div className='items-center justify-center min-h-[80vh] relative px-3'>
             <div className='absolute top-[20vh] overflow-hidden'>
               <m.h1 initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.75, delay: 0.5 }} className='text-4xl font-medium'>{`${ hour } : ${ minute }`}</m.h1>
               <m.p className='font-medium' initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.75, delay: 0.5 }} >{`${dayName} ${dateName}/${ currentMonts+1 }`}</m.p>
-              <h1>{`${rows[0].Address} ${rows[0].Conditions}`}</h1>
+              <h1 className='font-medium'>{`${rows[0].Address} ${rows[0].Conditions}`}</h1>
               <div className='mt-10 flex'>
                 <h3 className='text-8xl'>{fahrenheitToCelsius(rows[0].Temperature)}</h3>
                 <div className='flex'>
@@ -124,8 +102,12 @@ export default function Home(props) {
                 </div>
               </div>
               <div>
-      Your current location is: {location.latitude}, {location.longitude}
-    </div>
+                {location ? (
+                  <p>Your current location is: {location.latitude}, {location.longitude}</p>
+                ) : (
+                  <p>Unable to retrieve your location</p>
+                )}
+              </div>
             </div>
             
           </div>
