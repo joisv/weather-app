@@ -2,8 +2,37 @@ import Head from 'next/head'
 import Footer from './footer'
 import { motion as m } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import axios from 'axios'
+import csvtojson from 'csvtojson';
 
-export default function Home() {
+export async function getServerSideProps(context) {
+ let weatherData = []
+  try {
+    const response = await axios.get('https://visual-crossing-weather.p.rapidapi.com/forecast', {
+      method: 'GET',
+      params: {
+        aggregateHours: '24',
+        location: 'Banyuwangi',
+        contentType: 'csv',
+        unitGroup: 'us',
+        shortColumnNames: '0'
+      },
+      headers: {
+        'X-RapidAPI-Key': 'aea5e6f851msh0d3019689849da1p138e04jsn8b38e8f2988a',
+        'X-RapidAPI-Host': 'visual-crossing-weather.p.rapidapi.com'
+      }
+    })
+    weatherData = await csvtojson().fromString(response.data);
+  } catch (error) {
+    console.log(error);
+  }
+
+  return {
+    props: { weatherData }, // will be passed to the page component as props
+  }
+}
+
+export default function Home(props) {
 
   const [dayName, setDayName] = useState('');
   const [dateName, setDateName] = useState('');
@@ -11,6 +40,10 @@ export default function Home() {
   const [hour, setHours] = useState(0);
   const [minute, setMinutes] = useState(0);
   const [currentMonts, setCurrentMonth] = useState(0);
+  const rows = props.weatherData
+  const [location, setLocation] = useState(null);
+  const [permission, setPermission] = useState(false);
+
   
   let today = new Date();
   const currentMonth = today.getMonth();
@@ -21,20 +54,47 @@ export default function Home() {
 
   let hours = today.getHours();
   let minutes = today.getMinutes();
+  const formattedMinute = minutes.toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
   let seconds = today.getSeconds();
+
+  function fahrenheitToCelsius(fahrenheit) {
+    const getCelsius = (fahrenheit - 32) * 5/9;
+    const celsius = Math.round(getCelsius)
+    return celsius;
+  }
   
   useEffect(() => {
+    if (!navigator.geolocation) {
+      console.log('Geolocation is not supported by your browser');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation(position.coords);
+        setPermission(true);
+      },
+      () => {
+        console.log('Unable to retrieve your location');
+        setPermission(false);
+      }
+    );
+   
       setDayName(currentDayName)
       setDateName(date)
       setHours(hours)
-      setMinutes(minutes)
+      setMinutes(formattedMinute)
       setCurrentMonth(currentMonth)
-      // const interval = setInterval(() => {
-      //     setSeconds(seconds);
-      // }, 1000);
-      // return () => clearInterval(interval);
+    return () => clearInterval(1000);
   }, [dayName, dateName, second, hour, minute] );
   
+    if (!permission) {
+      console.log('allow');
+    }
+
+    if (!location) {
+    console.log('loading');
+    }
   return (
     <m.div 
       initial={{ y: "100%" }}
@@ -55,8 +115,19 @@ export default function Home() {
             <div className='absolute top-[20vh] overflow-hidden'>
               <m.h1 initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.75, delay: 0.5 }} className='text-4xl font-medium'>{`${ hour } : ${ minute }`}</m.h1>
               <m.p className='font-medium' initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.75, delay: 0.5 }} >{`${dayName} ${dateName}/${ currentMonts+1 }`}</m.p>
+              <h1>{`${rows[0].Address} ${rows[0].Conditions}`}</h1>
+              <div className='mt-10 flex'>
+                <h3 className='text-8xl'>{fahrenheitToCelsius(rows[0].Temperature)}</h3>
+                <div className='flex'>
+                  <div className='ratings'></div>
+                  <span className='font-medium text-2xl'>c</span>
+                </div>
+              </div>
+              <div>
+      Your current location is: {location.latitude}, {location.longitude}
+    </div>
             </div>
-           
+            
           </div>
           <Footer />
         </div>
