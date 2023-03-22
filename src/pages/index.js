@@ -87,8 +87,8 @@ export default function Home(props) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <div className={`min-h-[105vh] bg-red-500 mb ${ hour >= 18 ? 'bg-slate-900' : 'bg-orange-400'}`}>
+      <main className='max-w-screen-sm mx-auto'>
+        <div className={`min-h-[105vh] mb ${ hour >= 18 ? 'bg-slate-900 text-slate-300' : 'bg-orange-400'}`}>
           <div className='items-center justify-center min-h-[80vh] relative px-3'>
             <div className='absolute top-[20vh] overflow-hidden'>
               <m.h1 initial={{ y: "100%" }} animate={{ y: 0 }} transition={{ duration: 0.75, delay: 0.5 }} className='text-4xl font-medium'>{`${ hour } : ${ minute }`}</m.h1>
@@ -103,7 +103,7 @@ export default function Home(props) {
               </div>
               <div>
                 {location ? (
-                  <p>Your current location is: {location.latitude}, {location.longitude}</p>
+                  <p>from: {location.latitude}, {location.longitude}</p>
                 ) : (
                   <p>Unable to retrieve your location</p>
                 )}

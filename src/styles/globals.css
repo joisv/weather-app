@@ -11,4 +11,10 @@
         border: 4px solid #111111;
         border-radius: 50px;
     }
+    .element {
+        /* properti untuk membuat elemen semi-transparan */
+        background-color: rgba(255, 255, 255, 0.5);
+        /* properti untuk menambahkan efek blur */
+        backdrop-filter: blur(10px);
+      }
 }
