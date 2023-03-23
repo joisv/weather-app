@@ -71,8 +71,11 @@ export default function Home(props) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className='max-w-screen-sm mx-auto'>
-        <div className={`min-h-[105vh] mb ${ hour >= 18 ? 'bg-slate-900 text-slate-300' : 'bg-orange-400'}`}>
+      <main className='max-w-screen-sm mx-auto relative'>
+        <div className={`min-h-[105vh] ${ hour >= 18 ? 'bg-slate-900 text-slate-300' : 'bg-orange-400'}`}>
+          {hour<=10 ? ( 
+            <img className='absolute w-full h-full' src="img/morning.gif" />
+         ) : ( <div className='absolute w-full h-full bg-violet-500 opacity-50'></div> )}
           <div className='items-center justify-center min-h-[80vh] relative px-3'>
 
           <form onSubmit={handleSubmit}>
