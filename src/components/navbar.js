@@ -4,7 +4,7 @@ export default function Navbar(){
     return (
         <nav >
             <div className="flex flex-wrap justify-center">
-                <div className="absolute z-50 p-2 max-w-screen-sm mx-auto w-full right">
+                <div className="absolute z-20 p-2 max-w-screen-sm mx-auto w-full right">
                     <ul>
                         <div className="flex gap-3 text-sm font-medium  justify-end">
                             <Link href={'/'}>
