@@ -1,28 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 
-// export default function useWeather() {
-//   const [weatherData, setWeatherData] = useState([]);
-
-//   const getWeatherData = async () => {
-//     try {
-//       const response = await axios.get('https://dummyjson.com/products');
-//       setWeatherData(response.data);
-//     } catch (error) {
-//       console.log(error);
-//     }
-   
-//   };
-
-//   useEffect(() => {
-//     getWeatherData();
-//   }, []);
-
-//   return {
-//     weatherData,
-//     getWeatherData
-//   };
-// }
 export default function useWeather() {
   const [weatherData, setWeatherData] = useState([]);
 

@@ -13,7 +13,6 @@ export default function Home(props) {
   const [hour, setHours] = useState(0);
   const [minute, setMinutes] = useState(0);
   const [currentMonts, setCurrentMonth] = useState(0);
-  // const weather = props.weatherData
   const { location, permission, updateLocation } = getlocations()
   const [query, setQuery] = useState('');
   const { getWeatherData, weatherData } = useWeather()
@@ -102,7 +101,7 @@ export default function Home(props) {
                   </div>
                 </div>
               ) : (
-                  <p>{weatherData.response.data.message}</p>
+                  <p className='text-red-500 font-bold text-5xl'>{weatherData.message} Reached limit 25</p>
               )}
               {/* <div>
                 {location ? (
