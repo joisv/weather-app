@@ -4,6 +4,7 @@ import { motion as m } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import getlocations from '@/functions/getlocations'
 import useWeather from '@/functions/fetch'
+import { useRouter } from 'next/router';
 
 export default function Home(props) {
 
@@ -15,9 +16,9 @@ export default function Home(props) {
   const [currentMonts, setCurrentMonth] = useState(0);
   const { location, permission, updateLocation } = getlocations()
   const [query, setQuery] = useState('');
-  const { getWeatherData, weatherData } = useWeather()
+  const { getWeatherData, weatherData, searchWeather, searchWeatherData } = useWeather()
+  const router = useRouter()
  
-
   
   let today = new Date();
   const currentMonth = today.getMonth();
@@ -37,7 +38,7 @@ export default function Home(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-   
+    router.push(`/search?q=${query}`)
   }
 
   function fahrenheitToCelsius(fahrenheit) {
@@ -56,7 +57,6 @@ export default function Home(props) {
       setCurrentMonth(currentMonth)
     return () => clearInterval(1000);
   }, [dayName, dateName, second, hour, minute,] );
-  console.log(weatherData);
   return (
     <m.div 
       initial={{ y: "100%" }}
@@ -75,7 +75,7 @@ export default function Home(props) {
         <div className={`min-h-[105vh] ${ hour >= 18 ? 'bg-slate-900 text-slate-300' : 'bg-orange-400'}`}>
           {hour<=10 ? ( 
             <img className='absolute w-full h-full' src="img/morning.gif" />
-         ) : ( <div className='absolute w-full h-full bg-violet-500 opacity-50'></div> )}
+         ) : ( '' )}
           <div className='items-center justify-center min-h-[80vh] relative px-3'>
 
           <form onSubmit={handleSubmit}>
