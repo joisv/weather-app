@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import csvtojson from 'csvtojson';
 
 export default function useWeather() {
   const [weatherData, setWeatherData] = useState([]);
@@ -23,7 +24,7 @@ export default function useWeather() {
 
   const searchWeatherData = async (query) => {
     try {
-      const response = await axios.get('https://visual-crossing-weather.p.rapidapi.com/forecast', {
+      const response = await axios.get('https://visual-crossing-weather.p.rapidapi.com/forecas', {
         method: 'GET',
         params: {
           aggregateHours: '24',
@@ -37,9 +38,11 @@ export default function useWeather() {
           'X-RapidAPI-Host': 'visual-crossing-weather.p.rapidapi.com'
         }
       })
-      setSearchWeather(response.data)
+      const jsonData = await csvtojson().fromString(response.data)
+      setSearchWeather(jsonData)
     } catch (error) {
-      setSearchWeather(error)
+      console.error(error);
+        
     }
   }
 
