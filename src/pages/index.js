@@ -16,7 +16,7 @@ export default function Home(props) {
   const [currentMonts, setCurrentMonth] = useState(0);
   const { location, permission, updateLocation } = getlocations()
   const [query, setQuery] = useState('');
-  const { getWeatherData, weatherData, searchWeather, searchWeatherData } = useWeather()
+  const { getWeatherData, weatherData } = useWeather()
   const router = useRouter()
  
   
@@ -42,7 +42,7 @@ export default function Home(props) {
   }
   
   useEffect(() => {
-    console.log(weatherData);
+    
       getWeatherData()
       updateLocation()
       setDayName(currentDayName)
@@ -50,6 +50,7 @@ export default function Home(props) {
       setHours(hours)
       setMinutes(formattedMinute)
       setCurrentMonth(currentMonth)
+
     return () => clearInterval(1000);
   }, [] );
   return (
@@ -97,14 +98,13 @@ export default function Home(props) {
               ) : (
                   <p className='text-yellow-500 font-bold text-5xl'>{weatherData.message} Reached limit 25</p>
               )}
-              {/* <div>
+              <div>
                 {location ? (
-                  <h1>{weather.city_name}</h1>
                   <p>from: {location.latitude}, {location.longitude}</p>
                 ) : (
                   <p>Unable to retrieve your location</p>
                 )}
-              </div> */}
+              </div>
             </div>
             
           </div>

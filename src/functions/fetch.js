@@ -1,16 +1,15 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import csvtojson from 'csvtojson';
 
 export default function useWeather() {
   const [weatherData, setWeatherData] = useState([]);
-  const [searchWeather, setSearchWeather ] = useState([]);
-
+  
   const getWeatherData = async () => {
+    
     try {
       const response = await axios.get('https://weatherbit-v1-mashape.p.rapidapi.com/forecast/3hourly', {
         method: 'GET',
-        params: {lat: '-8.4326215', lon: '114.1669654'},
+        params: {lat:  '-8.4466992', lon: '114.1672582'},
         headers: {
           'X-RapidAPI-Key': 'aea5e6f851msh0d3019689849da1p138e04jsn8b38e8f2988a',
           'X-RapidAPI-Host': 'weatherbit-v1-mashape.p.rapidapi.com'
@@ -22,39 +21,14 @@ export default function useWeather() {
     }
   };
 
-  const searchWeatherData = async (query) => {
-    try {
-      const response = await axios.get('https://visual-crossing-weather.p.rapidapi.com/forecas', {
-        method: 'GET',
-        params: {
-          aggregateHours: '24',
-          location: query,
-          contentType: 'csv',
-          unitGroup: 'us',
-          shortColumnNames: '0'
-        },
-        headers: {
-          'X-RapidAPI-Key': 'aea5e6f851msh0d3019689849da1p138e04jsn8b38e8f2988a',
-          'X-RapidAPI-Host': 'visual-crossing-weather.p.rapidapi.com'
-        }
-      })
-      const jsonData = await csvtojson().fromString(response.data)
-      setSearchWeather(jsonData)
-    } catch (error) {
-      console.error(error);
-        
-    }
-  }
 
-  useEffect(() => {
-    getWeatherData();
-    searchWeatherData();
-  }, []);
+  // useEffect(() => {
+  //   getWeatherData();
+  // }, []);
 
   return {
     weatherData,
     getWeatherData,
-    searchWeather,
-    searchWeatherData
+   
   };
 }
